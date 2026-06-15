@@ -1,3 +1,55 @@
+import logging
+
+logging.basicConfig(
+    filename = "check.log",
+    filemode = "a",
+    level = logging.DEBUG,
+    format = '%(asctime)s - %(levelname)s - %(message)s'
+)
+
+# Chức năng 2
+def update_indices(devices):
+    device_id = input("Nhập mã thiết bị: ").strip()
+    device = None
+    for item in devices:
+        if item["id"] == device_id:
+            device = item
+            break
+    if device is None:
+        print("[ERR-E01] Không tìm thấy mã thiết bị trong hệ thống!")
+        logging.error(f"Không tìm thấy thiết bị có mã {device_id}")
+        return
+    while True:
+        try:
+            old_index = int(input("Nhập chỉ số cũ: "))
+            if old_index < 0:
+                print("[LỖI] Chỉ số phải lớn hơn hoặc bằng 0!")
+                continue
+            break
+        except ValueError:
+            print("[LỖI] Vui lòng nhập số hợp lệ!")
+    while True:
+        try:
+            new_index = int(input("Nhập chỉ số mới: "))
+            if new_index < 0:
+                print("[LỖI] Chỉ số phải lớn hơn hoặc bằng 0!")
+                continue
+            if new_index < old_index:
+                print("[ERR-E02] Chỉ số mới không được nhỏ hơn chỉ số cũ!")
+                continue
+            break
+        except ValueError:
+            print("[LỖI] Vui lòng nhập số hợp lệ!")
+    device["old_index"] = old_index
+    device["new_index"] = new_index
+    print(f"Đã cập nhật chỉ số cho thiết bị {device_id} thành công!")
+
+    logging.info(
+        f"Cập nhật thiết bị {device_id} | "
+        f"Old Index: {old_index} | "
+        f"New Index: {new_index}"
+    )
+    
 def show_menu():
     print("\n" + "="*50)
     print("      SMART ENERGY MONITOR - PHÒNG CƠ ĐIỆN      ")
@@ -28,7 +80,7 @@ def main():
             print("\n--> Bạn đã chọn Chức năng 1: Xem danh sách thiết bị.")
             
         elif choice == 2:
-            print("\n--> Bạn đã chọn Chức năng 2: Cập nhật chỉ số điện tiêu thụ.")
+            update_indices(devices)
             
         elif choice == 3:
             print("\n--> Bạn đã chọn Chức năng 3: Kích hoạt trạng thái cảnh báo quá tải.")
