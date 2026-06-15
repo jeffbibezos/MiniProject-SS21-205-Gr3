@@ -49,7 +49,28 @@ def update_indices(devices):
         f"Old Index: {old_index} | "
         f"New Index: {new_index}"
     )
-    
+
+# chức năng 4
+def calculate_energy_financials(devices):
+    logging.debug(f"Calculating energy financials for {len(devices)} devices.")
+
+    if (not devices):
+        return (0.0, 0.0, 0.0)
+
+    total_kwh = 0
+
+    for item in devices:
+        total_kwh += (item["new_index"] - item["old_index"])
+
+    base_cost = total_kwh * 3000
+    discount_percent = 0
+
+    if total_kwh >= 50000:
+        discount_percent = 3
+
+    final_cost = base_cost * (1 - discount_percent / 100)
+    return (total_kwh, discount_percent, final_cost)
+
 def show_menu():
     print("\n" + "="*50)
     print("      SMART ENERGY MONITOR - PHÒNG CƠ ĐIỆN      ")
@@ -86,7 +107,12 @@ def main():
             print("\n--> Bạn đã chọn Chức năng 3: Kích hoạt trạng thái cảnh báo quá tải.")
             
         elif choice == 4:
-            print("\n--> Bạn đã chọn Chức năng 4: Tính tổng lượng điện & Chi phí năng lượng.")
+            total_kwh, discount_percent, final_cost = (calculate_energy_financials(devices))
+
+            print("\n===== BÁO CÁO NĂNG LƯỢNG =====")
+            print(f"Tổng điện tiêu thụ : {total_kwh:,.0f} kWh")
+            print(f"Chiết khấu áp dụng : {discount_percent}%")
+            print(f"Tổng tiền thanh toán: {final_cost:,.0f} VND")
             
         elif choice == 5:
             print("\nCảm ơn bạn đã sử dụng hệ thống. Tạm biệt!")
